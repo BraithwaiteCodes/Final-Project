@@ -11,8 +11,47 @@
     <nav class="bg-light">
       <div class="container-full">
         <a class="navbar" href="/">Squash Tracker</a>
-        <div class="collapse" id="navbar"></div>
+        <div class="collapse" id="navbar">
+          {% if session["userId"] %}
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a href="/newgame" class="nav-link">Play</a>
+            </li>
+            <li class="nav-item">
+              <a href="/history" class="nav-link">Game Played</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a href="/profile" class="nav-link">Profile</a>
+            </li>
+          </ul>
+          {% else %}
+          <ul>
+            <li class="nav-item">
+              <a href="/register" class="nav-link">Register</a>
+            </li>
+            <li class="nav-item">
+              <a href="/login" class="nav-link">Log In</a>
+            </li>
+          </ul>
+          {% endif %}
+        </div>
       </div>
     </nav>
+
+    {% if get_flashed_messages() %}
+    <header>
+      <div class="alert" role="alert">
+        {{ get_flashed_messages() | join(" ") }}
+      </div>
+    </header>
+    {% endif %}
+    <main class="container-full">{% block main %}{% endblock%}</main>
+
+    <footer class="footer">
+      Copyright ©️ by Joshua Braithwaite as BraithwaiteCodes. All rights
+      reserved. Developed for the CS50 Final Project and personal use.
+    </footer>
   </body>
 </html>
