@@ -5,3 +5,20 @@
   --text-color-asbtract: #5c80bc;
   --text-color: #cdd1c4;
 }
+
+a {
+  color: var(--text-color);
+}
+
+.bg-mod-primary {
+  background-color: var(--primary-bg-color);
+}
+
+.btn-primary {
+  background-color: var(--secondary-bg-color);
+  border-color: var(--secondary-bg-color);
+}
+
+.nav-link {
+  color: var(--text-color);
+}
