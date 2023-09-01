@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,6 +8,7 @@
     <link href="/static/styles.css" rel="stylesheet" />
     <title>Squash Tracker: {% block title %} {% endblock %}</title>
   </head>
+
   <body>
     <nav class="bg-light">
       <div class="container-full">
@@ -41,17 +43,20 @@
     </nav>
 
     {% if get_flashed_messages() %}
+
     <header>
       <div class="alert" role="alert">
         {{ get_flashed_messages() | join(" ") }}
       </div>
     </header>
+
     {% endif %}
+
     <main class="container-full">{% block main %}{% endblock%}</main>
 
     <footer class="footer">
-      Copyright ©️ by Joshua Braithwaite as BraithwaiteCodes. All rights
-      reserved. Developed for the CS50 Final Project and personal use.
+      <p>Copyright ©️ by Joshua Braithwaite as BraithwaiteCodes.</p>
+      <p>All rights reserved. Developed for the CS50 Final Project.</p>
     </footer>
   </body>
 </html>
