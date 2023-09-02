@@ -5,5 +5,14 @@
 {% endblock %} 
 
 {% block main %}
-
+    <form action="/login" method="post">
+        <div class="mb-3">
+            <input autofocus autocomplete="off" class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text" aria-required="true">
+        </div>
+        <div class="m-auto">
+            <input autofocus autocomplete="off" class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password" aria-required="true">
+        </div>
+        <button class="btn btn-primary mt-4" type="submit">Log In</button>
+        <button class="btn btn-primary mt-4" onclick="location.href='/register'" type="button">Register</button>
+    </form>
 {% endblock %}
