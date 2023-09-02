@@ -14,8 +14,18 @@ a {
   color: var(--text-color);
 }
 
+.headers {
+  color: var(--text-color-asbtract);
+  font-size: 2em;
+  font-weight: 600;
+  margin-top: 2em;
+}
+
 .bg-mod-primary {
   background-color: var(--primary-bg-color);
+}
+
+.bg-mod-secondary {
 }
 
 .btn-primary {
