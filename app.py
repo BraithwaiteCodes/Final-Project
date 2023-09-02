@@ -36,6 +36,16 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/logout")
+def logout():
+
+    # Foget any user_id
+    session.clear()
+
+    # Redirect to home page
+    return redirect("/")
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
