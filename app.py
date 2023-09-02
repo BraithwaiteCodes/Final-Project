@@ -66,7 +66,7 @@ def login():
             return apology("Invalid username and/or password", 403)
 
         # Remember which user has logged in
-        session["user_id"] = users[0]["id"]
+        session["userId"] = users[0]["id"]
 
         # Redirect user to home page
         return redirect("/")
