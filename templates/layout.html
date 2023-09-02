@@ -33,7 +33,7 @@
         </button>
 
         <div class="collapse navbar-collapse bg-mod-primary" id="navbar">
-          {% if session["userId"] %}
+          {% if session["user_id"] %}
           <ul class="navbar-nav me-auto m-2">
             <li class="nav-item">
               <a href="/newgame" class="nav-link">New Game</a>
@@ -45,6 +45,9 @@
           <ul class="navbar-nav ms-auto mt-2">
             <li class="nav-item">
               <a href="/profile" class="nav-link">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a href="/logout" class="nav-link">Logout</a>
             </li>
           </ul>
           {% else %}
