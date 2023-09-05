@@ -129,3 +129,11 @@ def register():
     # User reached route via GET
     else:
         return render_template("register.html")
+
+
+@app.route("/newgame", methods=["GET", "POST"])
+def newgame():
+
+    # Get current user id and show in form
+    # TODO
+    return render_template("newgame.html")
