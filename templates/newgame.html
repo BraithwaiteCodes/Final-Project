@@ -6,11 +6,19 @@
 
 {% block main %}
     <!-- TODO -->
-    <form action="/newgame" method="post">
-        <div class="m-auto">
-            <input autocomplete="off" class="form-control mx-auto w-auto" id="player2" name="player2" placeholder="Opponent" required type="text">
-        </div>
-        <div class="in"></div>
-    </form>
-    
+    <div class="row align-items-center m-3 mx-auto" style="width: 30%;">
+        <form action="/newgame" method="post">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="player2">{{user}} vs.</label>
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="player2" name="player2" placeholder="Opponent" required type="text">
+            </div>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="gamesToPlay">Games to Play</label>
+                <select class="form-select" id="gamesToPlay">
+                    <option selected disabled>Select Amount</option>
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+            </div>
+        </form>
+    </div> 
 {% endblock %}

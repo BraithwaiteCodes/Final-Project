@@ -135,5 +135,8 @@ def register():
 def newgame():
 
     # Get current user id and show in form
+    user = db.execute("SELECT username FROM usersInfo WHERE id=?",
+                      session["user_id"])[0]["username"]
+
     # TODO
-    return render_template("newgame.html")
+    return render_template("newgame.html", user=user)
