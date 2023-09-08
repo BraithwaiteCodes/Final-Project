@@ -21,16 +21,21 @@ a {
   margin-top: 2em;
 }
 
-.bg-mod-primary {
+.navbar {
   background-color: var(--primary-bg-color);
 }
 
-.bg-mod-secondary {
+.navbar-nav {
+  --bs-nav-link-hover-color: var(--warning-text-color);
 }
 
 .btn-primary {
   background-color: var(--secondary-bg-color);
   border-color: var(--secondary-bg-color);
+  --bs-btn-hover-bg: var(--warning-text-color);
+  --bs-btn-hover-border-color: var(--warning-text-color);
+  --bs-btn-hover-color: var(--primary-bg-color);
+  --bs-btn-active-color: var(--primary-bg-color);
 }
 
 .navbar-brand {
@@ -53,4 +58,9 @@ a {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100%;
+}
+
+.new-game-select {
+  width: 50%;
+  justify-content: center;
 }

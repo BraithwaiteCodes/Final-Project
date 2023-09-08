@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-    <!-- TODO -->
+<!-- Form for selecting parameters for the new game to be played -->
     <div class="row align-items-center mb-3 mx-auto" style="width: 30%; height:auto">
         <form action="/newgame" method="post">
             <div class="input-group mb-3">
@@ -14,19 +14,30 @@
                 <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="player2" name="player2" placeholder="Opponent" required type="text">
             </div>
             <div class="input-group mb-3">
-                <label class="input-group-text" for="gamesToPlay">Games to Play</label>
-                <select class="form-select" id="gamesToPlay">
+                <label class="input-group-text new-game-select" for="gamesToPlay">Games to Play</label>
+                <select class="form-select" id="gamesToPlay" required>
                     <option selected disabled>Select Amount</option>
                     <option value="3">3</option>
                     <option value="5">5</option>
+                </select>
             </div>
             <div class="input-group mb-3">
-                <label class="input-group-text" for="points">Points per Game</label>
-                <select class="form-select" id="points">
-                    <option selected disabled>Points</option>
+                <label class="input-group-text new-game-select" for="points">Points per Game</label>
+                <select class="form-select" id="points" required>
+                    <option selected disabled>Select Amount</option>
                     <option value="11">11</option>
                     <option value="15">15</option>
+                </select>
             </div>
+            <div class="input-group mb-3">
+                <label class="input-group-text new-game-select" for="winBy">Win By</label>
+                <select class="form-select" id="winBy" required>
+                    <option selected disabled>Select Amount</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+            </div>
+            <button class="btn btn-primary btn-lg mt-4">Play</button>
         </form>
     </div> 
 {% endblock %}
