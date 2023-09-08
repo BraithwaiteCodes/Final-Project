@@ -64,3 +64,43 @@ a {
   width: 50%;
   justify-content: center;
 }
+
+.player--active {
+  background-color: rgba(48, 50, 61, 0.8);
+}
+
+.player--inactive {
+  background-color: rgba(48, 50, 61, 0.5);
+}
+
+.play-background {
+  background-color: rgba(48, 50, 61, 0.3);
+  backdrop-filter: blur(200px);
+  filter: blur();
+  box-shadow: 0, 3rem 5rem #53566d;
+  border-radius: 10px;
+}
+
+.player {
+  border-radius: 10px;
+  color: var(--primary-bg-color);
+  font-weight: 500;
+}
+
+.score {
+  font-size: 10rem;
+  color: rgb(233, 233, 233);
+}
+
+.players {
+  font-weight: 300;
+}
+
+.btn-undo {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  transform: translateY(-50%);
+  transform: translateX(-50%);
+}

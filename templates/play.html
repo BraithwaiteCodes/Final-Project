@@ -1,0 +1,24 @@
+{% extends "layout.html" %} 
+
+{% block title %} 
+    Match
+{% endblock %} 
+
+{% block main %}
+    <div class="container-fluid">
+        <button class="btn btn-danger m-2">End Match</button>
+    </div>
+    <div class="container text-center bg-mod-primary vh-100">
+        <div class="row">
+            <div class="col player vh-100 player--active">
+                <h2 class="text-lg-center m-3 players" id="user">{{ user }}</h2>
+                <span class="score">0</span>
+            </div>
+            <div class="col player players player--inactive">
+                <h1 class="text-lg-center m-3" id="opponent">{{ opponent }}</h1>
+                <span class="score">0</span>
+            </div>
+        </div>
+        <button class="btn btn-undo">Undo</button>
+    </div>
+{% endblock %}
