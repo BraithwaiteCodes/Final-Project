@@ -129,3 +129,41 @@ def register():
     # User reached route via GET
     else:
         return render_template("register.html")
+
+
+@app.route("/newgame", methods=["GET", "POST"])
+def newgame():
+    try:
+        # Get current user id and show in form
+        user = db.execute("SELECT username FROM usersInfo WHERE id=?",
+                          session["user_id"])[0]["username"]
+    except:
+        return apology("Unable to get username from DB", 403)
+
+    # User submits from via post
+    if request.method == "POST":
+        # Variables for the function
+        opponent = request.form.get("opponent")
+        games_to_play = request.form.get("gamesToPlay")
+        points_per_game = request.form.get("points")
+        win_by = request.form.get("winBy")
+
+        try:
+            games_to_play = int(games_to_play)
+            points_per_game = int(points_per_game)
+            win_by = int(win_by)
+        except:
+            return apology("Please select game parameters", 403)
+
+        print(games_to_play, points_per_game, win_by)
+
+        # Logic Checks
+        if not opponent:
+            return apology("Player must verse someone", 403)
+
+        # Redirect user to new game page with relevant information
+        return render_template("play.html", user=user, opponent=opponent, games=games_to_play, points=points_per_game, win_by=win_by)
+
+    # User got here via GET so render new game form
+    else:
+        return render_template("newgame.html", user=user)
