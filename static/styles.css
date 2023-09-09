@@ -83,24 +83,34 @@ a {
 
 .player {
   border-radius: 10px;
-  color: var(--primary-bg-color);
+  height: 90%;
+  color: rgb(233, 233, 233);
   font-weight: 500;
 }
 
-.score {
-  font-size: 10rem;
+.col .score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15rem;
   color: rgb(233, 233, 233);
+  padding-bottom: 10%;
 }
 
 .players {
   font-weight: 300;
 }
 
-.btn-undo {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  bottom: 50%;
-  transform: translateY(-50%);
-  transform: translateX(-50%);
+.game-btns {
+  position: relative;
+  transform: translateY(40%);
+}
+.col-sm-2 {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+#logo_main {
+  height: 3em;
+  width: auto;
 }
