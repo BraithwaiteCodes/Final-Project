@@ -155,8 +155,6 @@ def newgame():
         except:
             return apology("Please select game parameters", 403)
 
-        print(games_to_play, points_per_game, win_by)
-
         # Logic Checks
         if not opponent:
             return apology("Player must verse someone", 403)
