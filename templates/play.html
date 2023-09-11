@@ -7,21 +7,21 @@
 {% block main %}
     <div class="container text-center bg-mod-primary mt-3">
         <div class="row">
-            <div class="col player player--active">
-                <h1 class="text-lg-center m-3 players" id="user">{{ user }}</h1>
-                <span class="score" id="score--user">0</span>
+            <div class="col player player--0 player--active">
+                <h1 class="text-lg-center m-3" id="user">{{ user }}</h1>
+                <button class="btn-large-score btn mb-5" id="score--0">0</button>
             </div>
-            <div class="col-sm-2 game-btns ">
+            <div class="col-sm-2 game-btns">
                 <div class="row">
-                    <button class="btn btn-primary mb-3">Undo</button>
+                    <button class="btn btn-primary mb-3" id="undoBtn">Undo</button>
                 </div>
                 <div class="row">
-                    <button class="btn btn-danger mb-3">End Match</button>
+                    <button class="btn btn-danger mb-3" id="endMatchBtn">End Match</button>
                 </div>
             </div>
-            <div class="col player players player--inactive">
+            <div class="col player player--1 player--inactive">
                 <h1 class="text-lg-center m-3" id="opponent">{{ opponent }}</h1>
-                <span class="score" id="score--opponent">0</span>
+                <button class="btn-large-score btn mb-5" id="score--1">0</button>
             </div>
         </div>
     </div>
