@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const backBtn = document.getElementById("goBack");
   const nextGameBtn = document.getElementById("nextGame");
   const endMatchBtn = document.getElementById("endMatchBtn");
+  const userGamesWon = document.getElementById("games--0");
+  const oppGamesWon = document.getElementById("games--1");
 
   ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -56,6 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Player 0 is the first nested array and player-1 is the second
   const gameScores = [[], []];
+  const allGames = {};
 
   const incrementScoreForPlayer = function (player) {
     curPlayerScore = document.getElementById(`score--${player}`);
@@ -111,6 +114,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (playerScore === pointsToWin && playerScore - opponentScore >= winBy) {
       openGameModal();
+    } else if (
+      playerScore >= pointsToWin &&
+      playerScore - opponentScore >= winBy
+    ) {
+      openGameModal();
     }
   };
 
@@ -118,7 +126,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // UNDO button functionality
   undoBtn.addEventListener("click", function () {
     removeLastScore();
-    console.log(gameScores);
   });
 
   // Scoreboard event listener for defined user
@@ -136,7 +143,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // Next Game event listener
   nextGameBtn.addEventListener("click", function () {
     const totalGames = gameInfo["Total Games"];
-
     // if 3 total games, this will be 2. If 5 total games, this will be 3.
     const best_of = Math.ceil(totalGames / 2);
 
@@ -144,10 +150,19 @@ document.addEventListener("DOMContentLoaded", function () {
     curGamesPlayed = gameInfo["Games Played"];
     curGamesPlayed += 1;
     gameInfo["Games Played"] = curGamesPlayed;
-    closeGameModal();
-    gamesHTMLLocation = document.getElementById("gamesPlayed");
 
+    // Get locations for where we need to update the value
+    gamesHTMLLocation = document.getElementById("gamesPlayed");
     gamesHTMLLocation.textContent = `Games Played: ${curGamesPlayed}`;
+
+    // Update the user who won the games' score
+    const gamesWonContainer = document.getElementById(
+      `games--${lastPlayerToScore}`
+    );
+    gamesWinnerGames = parseInt(gamesWonContainer);
+
+    // Reset the buttons and close the modal window
     resetScores();
+    closeGameModal();
   });
 });
