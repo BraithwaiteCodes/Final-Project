@@ -10,6 +10,7 @@
             <div class="col player player--0 player--active">
                 <h1 class="text-lg-center m-3" id="user">{{ user }}</h1>
                 <button class="btn-large-score btn mb-5" id="score--0">0</button>
+                <h2 class="text-lg-center m-3" id="games--0">0 / {{ games }}</h2>
             </div>
             <div class="col-sm-2 game-btns">
                 <div class="row">
@@ -18,11 +19,27 @@
                 <div class="row">
                     <button class="btn btn-danger mb-3" id="endMatchBtn">End Match</button>
                 </div>
+                <div class="row">
+                    <span class="text-body" id="gamesToPlay">Total Games: {{ games }}</span>
+                    <span class="text-body" id="points">Points per Game: {{ points }}</span>
+                    <span class="text-body" id="win_by">Win By: {{ win_by }}</span>
+                    <span class="text-body" id="gamesPlayed">Games Played: 0</span>
+                </div>
             </div>
             <div class="col player player--1 player--inactive">
                 <h1 class="text-lg-center m-3" id="opponent">{{ opponent }}</h1>
                 <button class="btn-large-score btn mb-5" id="score--1">0</button>
+                <h2 class="text-lg-center m-3" id="games--1">0 / {{ games }}</h2>
             </div>
         </div>
     </div>
+
+    <div class="hidden-modal game-won-modal" id="gameWonModal" tabindex="-1">
+        <h1 class="modal-title fs-5" id="gameWonModalTitle"></h1>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary m-3 game-modal" data-bs-dismiss="gameWonModal" id="goBack">Back</button>
+            <button type="button" class="btn btn-warning m-3 game-modal" id="nextGame">Next Game</button>
+        </div>
+    </div>
+    <div class="overlay hidden-modal"></div>
 {% endblock %}
