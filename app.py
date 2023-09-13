@@ -4,6 +4,7 @@ from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
+import json
 
 from helpers import login_required, check_email, apology
 
@@ -132,6 +133,7 @@ def register():
 
 
 @app.route("/newgame", methods=["GET", "POST"])
+@login_required
 def newgame():
     try:
         # Get current user id and show in form
@@ -165,3 +167,54 @@ def newgame():
     # User got here via GET so render new game form
     else:
         return render_template("newgame.html", user=user)
+
+
+@app.route('/matchFinished/<string:matchData>', methods=['POST'])
+def matchFinished(matchData):
+    # 1 - Load data
+    data = json.loads(matchData)
+    user_id = session["user_id"]
+
+    # Extracting data from submitted fields
+    user = data["user"]
+    opponent = data["opponent"]
+    userGamesWon = data["userGamesWon"]
+    oppGamesWon = data["oppGamesWon"]
+
+    if userGamesWon > oppGamesWon:
+        winner = user
+    else:
+        winner = opponent
+
+    # Remove irrelevant variables from the data before looping
+    data.pop('user')
+    data.pop('opponent')
+    data.pop('userGamesWon')
+    data.pop('oppGamesWon')
+
+    # 2 - Add overall result to the matches table in the database
+    db.execute("INSERT INTO matches (userId, userName, opponent, userGamesWon, opponentGamesWon, matchWinner) VALUES (?, ?, ?, ?, ?, ?)",
+               user_id, user, opponent, userGamesWon, oppGamesWon, winner)
+
+    # get the latest ID for matches from the match DB.
+    matchId = db.execute(
+        "SELECT * FROM matches ORDER BY matchId DESC LIMIT 1")[0]["matchId"]
+
+    # 3 - Add the individual game results to the games table in the database
+    for game in data:
+        # TODO - Need to fix how the data from these arrays feeds into the table
+        userPoints = data[game][0]
+        oppPoints = data[game][1]
+        userScore = max(userPoints)
+        oppScore = max(oppPoints)
+
+        # 4 - Need to determine individual game winner from results
+        if len(userPoints) > len(oppPoints):
+            gameWinner = user
+        else:
+            gameWinner = opponent
+
+        db.execute("INSERT INTO games (matchId, userId, userName, opponentName, userPoints, opponentPoints, gameWinner) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                   matchId, user_id, user, opponent, userScore, oppScore, gameWinner)
+
+    return redirect("/")

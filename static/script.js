@@ -175,8 +175,9 @@ const checkMatchWon = function (player, best_of) {
     openWonMatchModal();
     const matchWonModalTitle = document.getElementById("matchWonModalTitle");
     matchWonModalTitle.textContent = `${winner} won the Match. Return Home`;
+    return true;
   } else {
-    return;
+    return false;
   }
 };
 
@@ -227,5 +228,38 @@ nextGameBtn.addEventListener("click", function () {
   closeGameModal();
 
   // Check if match won
-  checkMatchWon(lastPlayerToScore, best_of);
+  const matchWon = checkMatchWon(lastPlayerToScore, best_of);
+  if (matchWon) {
+    sendData();
+  } else {
+    return;
+  }
 });
+
+// Final function that sends scores array to python/flask route
+const sendData = function () {
+  const player0Name = document.getElementById("user").textContent;
+  const player1Name = document.getElementById("opponent").textContent;
+  const userGamesWon = document
+    .getElementById("games--0")
+    .textContent.split(" / ")[0];
+  const oppGamesWon = document
+    .getElementById("games--1")
+    .textContent.split(" / ")[0];
+  const totalGamesPlayed = document
+    .getElementById("gamesPlayed")
+    .textContent.split(": ")[1];
+
+  // Creating and modifying data to be sent
+  const matchData = allGames;
+  matchData["user"] = player0Name;
+  matchData["opponent"] = player1Name;
+  matchData["userGamesWon"] = userGamesWon;
+  matchData["oppGamesWon"] = oppGamesWon;
+
+  dataToSend = JSON.stringify(matchData);
+
+  const request = new XMLHttpRequest();
+  request.open("POST", `/matchFinished/${dataToSend}`);
+  request.send();
+};
