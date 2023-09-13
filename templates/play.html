@@ -41,5 +41,9 @@
             <button type="button" class="btn btn-warning m-3 game-modal" id="nextGame">Next Game</button>
         </div>
     </div>
+    <div class="hidden-modal game-won-modal" id="matchWonModal" tabindex="-1">
+        <h1 class="modal-title fs-5" id="matchWonModalTitle"></h1>
+        <button type="submit" class="btn btn-danger m-3 game-modal" id="returnHome" onclick="location.href='/';">Return Home</button>
+    </div>
     <div class="overlay hidden-modal"></div>
 {% endblock %}
