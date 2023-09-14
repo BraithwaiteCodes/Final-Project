@@ -33,8 +33,50 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    # Show the homepage
-    return render_template("index.html")
+    # Get latest results from the database for the user
+    matches = 10
+    games = 50
+    user_id = session["user_id"]
+
+    # Get last 10 match info
+    match_results = db.execute(
+        "SELECT * FROM matches WHERE userId = ? ORDER BY time DESC LIMIT ?", user_id, matches)
+
+    # Get last 50 games
+    game_results = db.execute(
+        "SELECT * FROM games WHERE userId = ? ORDER BY time DESC LIMIT ?", user_id, games)
+
+    # Implementing stats from matches
+    total_games_won = 0
+    matches_played = 0
+    for match in match_results:
+        matches_played = matches_played + 1
+        total_games_won = total_games_won + match["userGamesWon"]
+
+    # Initialising variables for stats
+    gameplay_stats = {}
+    total_points_scored = 0
+    total_points_conceded = 0
+    games_played = len(game_results)
+    # Calculating values for variables above
+    for game in game_results:
+        total_points_scored = total_points_scored + game["userPoints"]
+        total_points_conceded = total_points_conceded + game["opponentPoints"]
+
+    average_points_scored = round(float(total_points_scored / games_played), 2)
+    average_points_conceded = round(
+        float(total_points_conceded / games_played), 2)
+
+    # adding info to gameplay stats dict
+    gameplay_stats["totalPointsScored"] = total_points_scored
+    gameplay_stats["totalPointsConceded"] = total_points_conceded
+    gameplay_stats["gamesPlayed"] = games_played
+    gameplay_stats["averagePointsScored"] = average_points_scored
+    gameplay_stats["averagePointsConceded"] = average_points_conceded
+    gameplay_stats["totalGamesWon"] = total_games_won
+    gameplay_stats["matchesPlayed"] = matches_played
+
+    return render_template("index.html", match_results=match_results, gameplay_stats=gameplay_stats, games=games_played)
 
 
 @app.route("/logout")

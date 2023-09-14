@@ -15,10 +15,10 @@ a {
 }
 
 .headers {
-  color: var(--text-color-asbtract);
+  color: var(--secondary-bg-color);
   font-size: 2em;
   font-weight: 600;
-  margin-top: 2em;
+  margin: 1em 0 1em 0;
 }
 
 .navbar {
@@ -145,4 +145,33 @@ a {
   backdrop-filter: blur(4px);
   z-index: 100;
   transition: all 0.5s;
+}
+
+/* Index Page CSS */
+#indexGames {
+  background-color: #e7e7e777;
+  border-radius: 1.5rem;
+  box-shadow: 0 1.5rem 1.5rem rgba(133, 133, 133, 0.3);
+  margin-left: 3rem;
+}
+
+#gameplayStats {
+  background-color: #e7e7e777;
+  border-radius: 1.5rem;
+  box-shadow: 0 1.5rem 1.5rem rgba(133, 133, 133, 0.3);
+  margin-left: 3rem;
+  margin-right: 3rem;
+}
+
+.recent-games-headers {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.game-stats {
+  font-size: 3rem;
+}
+
+.game-stat-headers {
+  font-size: 1.5rem;
 }

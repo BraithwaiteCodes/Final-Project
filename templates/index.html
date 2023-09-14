@@ -10,11 +10,61 @@
     </div>
     <div class="container-fluid bg-mod-secondary">
         <div class="row">
-            <div class="col">
-                <span class="headers">Recent Games</span>
+            <div class="col-3" id="indexGames">
+                <h1 class="headers">Recent Games</h1>
+                <div class="row">
+                    <div class="col table-responsive mb-3">
+                        <table class="table">
+                            <tr>
+                                <th>Played</th>
+                                <th>Result</th>
+                                <th>Winner</th>
+                            </tr>
+                            {% for match in match_results %}
+                                <tr>
+                                    <td>
+                                        {{ match["opponent"] }}
+                                    </td>
+                                    <td>
+                                        {{ match["userGamesWon"] }} / {{ match["opponentGamesWon"]}}
+                                    </td>
+                                    <td>
+                                        {{ match["matchWinner"] }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
             </div>
-            <div class="col">
-                <span class="headers">Upcoming Tournaments</span>
+            <div class="col" id="gameplayStats">
+                <h1 class="headers">Game Statistics</h1>
+                <div class="row">
+                    <div class="col">
+                        <p class="game-stat-headers">Matches Played</p>
+                        <span class="game-stats">{{ gameplay_stats["matchesPlayed"] }}</span>
+                    </div>
+                    <div class="col">
+                        <p class="game-stat-headers">Games Played</p>
+                        <span class="game-stats">{{ gameplay_stats["gamesPlayed"] }}</span>
+                    </div>
+                    <div class="col">
+                        <p class="game-stat-headers">Games Won</p>
+                        <span class="game-stats">{{ gameplay_stats["totalGamesWon"] }}</span>
+                    </div>
+                    <div class="col">
+                        <p class="game-stat-headers">Points Scored</p>
+                        <span class="game-stats">{{ gameplay_stats["totalPointsScored"] }}</span>
+                    </div>
+                    <div class="col">
+                        <p class="game-stat-headers">Points Conceded</p>
+                        <span class="game-stats">{{ gameplay_stats["totalPointsConceded"] }}</span>
+                    </div>
+                    <div class="col">
+                        <p class="game-stat-headers">Average Points</p>
+                        <span class="game-stats">{{ gameplay_stats["averagePointsScored"] }}</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
