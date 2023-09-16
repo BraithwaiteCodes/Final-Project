@@ -118,4 +118,20 @@ On the right, you will see all the game stats for at most the last 50 games you 
 
 This is because you log in and everything is based around your user_id in the app.
 
-All the data is based on that.
+This app is to track YOUR scores, not your opponents.
+
+### Additional Features
+
+#### Games Played
+
+This link (top left of screen) will show you all the recent 100 games statistics, or whichever is less than that if you have not played that much yet.
+
+This is where you can dive into a bit more detail around your statistics and who your main rival is.
+
+![Games Played link that shows the user more detailed statistics on their gameplay](/static/images/ReadmeImages/GamesPlayedLink.png)
+
+#### Profile
+
+In this link you will see your profile details. Here you can click the edit information button and fill out the form to update your information.
+
+**Note that updating the form requires you to update your username, otherwise it won't work**

@@ -138,6 +138,7 @@ a {
   background-color: #8f8f8f83;
   padding: 5rem 6rem;
   box-shadow: 0 4rem 6rem rgba(0, 0, 0, 0.3);
+  border-radius: 0.5em;
   z-index: 1000;
   transition: all 0.5s;
 }
@@ -218,4 +219,12 @@ a {
   backdrop-filter: blur(4px);
   z-index: 100;
   transition: all 0.5s;
+}
+
+.games-played {
+  margin-top: 1em;
+  padding: 0.5em 0.5em 1.5em 0.5em;
+  background-color: #f0f0f083;
+  box-shadow: 0 4rem 6rem rgba(0, 0, 0, 0.3);
+  border-radius: 1em;
 }

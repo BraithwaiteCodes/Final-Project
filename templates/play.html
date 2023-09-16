@@ -45,5 +45,10 @@
         <h1 class="modal-title fs-5" id="matchWonModalTitle"></h1>
         <button type="submit" class="btn btn-danger m-3 game-modal" id="returnHome" onclick="location.href='/';">Return Home</button>
     </div>
+    <div class="hidden-modal game-won-modal" id="endMatchModal" tabindex="-1">
+        <h1 class="modal-title fs-5" id="endMatchModalTitle">Are you sure you want to end this Match?</h1>
+        <button type="submit" class="btn btn-danger m-3 game-modal" id="returnHome" onclick="location.href='/';">Yes</button>
+        <button type="submit" class="btn btn-primary m-3 game-modal" id="noBtn">No</button>
+    </div>
     <div class="overlay hidden-modal"></div>
 {% endblock %}

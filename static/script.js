@@ -6,10 +6,12 @@ const opponentEl = document.querySelector(".player--1");
 const undoBtn = document.getElementById("undoBtn");
 const gameWonModal = document.getElementById("gameWonModal");
 const matchWonModal = document.getElementById("matchWonModal");
+const endMatchModal = document.getElementById("endMatchModal");
 const overlay = document.querySelector(".overlay");
 const backBtn = document.getElementById("goBack");
 const nextGameBtn = document.getElementById("nextGame");
 const endMatchBtn = document.getElementById("endMatchBtn");
+const noBtn = document.getElementById("noBtn");
 const userGamesWon = document.getElementById("games--0");
 const oppGamesWon = document.getElementById("games--1");
 
@@ -32,6 +34,16 @@ const openWonMatchModal = function () {
   overlay.classList.remove("hidden-modal");
 };
 
+const openEndMatchModal = function () {
+  endMatchModal.classList.remove("hidden-modal");
+  overlay.classList.remove("hidden-modal");
+};
+
+const closeEndMatchModal = () => {
+  endMatchModal.classList.add("hidden-modal");
+  overlay.classList.add("hidden-modal");
+};
+
 // Listeners for closing the modal window
 backBtn.addEventListener("click", function () {
   removeLastScore();
@@ -41,6 +53,15 @@ backBtn.addEventListener("click", function () {
 overlay.addEventListener("click", function () {
   removeLastScore();
   closeGameModal();
+  closeEndMatchModal();
+});
+
+endMatchBtn.addEventListener("click", function () {
+  openEndMatchModal();
+});
+
+noBtn.addEventListener("click", function () {
+  closeEndMatchModal();
 });
 
 /////////////////////////////////////////////////////
