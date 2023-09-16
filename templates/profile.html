@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <div class="col-10 justify-content-center">
+            <div class="row" id="profileUsername">
+                <div class="col-4 profile">
+                    <p class="headers-profile">Username</p>
+                </div>
+                <div class="col profile profile-right">
+                    <p class="headers-profile">{{ username }}</p>
+                </div>
+            </div>
+            <div class="row" id="profileEmail">
+                <div class="col-4 profile">
+                    <p class="headers-profile">Email</p>
+                </div>
+                <div class="col profile profile-right">
+                    <p class="headers-profile">{{ email }}</p>
+                </div>
+            </div>
+            <div class="row" id="profileNumber">
+                <div class="col-4 profile">
+                    <p class="headers-profile">Phone Number</p>
+                </div>
+                <div class="col profile profile-right">
+                    <p class="headers-profile">{{ phone_number }}</p>
+                </div>
+            </div>
+            <button class="btn btn-primary mt-3" id="editInfoBtn">Edit Information</button>
+        </div>
+    </div>
+    <div class="hidden-modal profile-modal" id="profileModal" tabindex="-1">
+        <form action="/updateUserInfo" method="post">
+            <div class="m-3">
+                <input autofocus autocomplete="off" class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username: {{ username }}" type="text" disabled>
+            </div>
+            <div class="m-3">
+                <input autofocus autocomplete="off" class="form-control mx-auto w-auto" id="new_username" name="newUsername" placeholder="New Username" type="text" required>
+            </div>
+            <div class="m-3">
+                <input autofocus autocomplete="off" class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email: {{ email }}" type="text" disabled>
+            </div>
+            <div class="m-3">
+                <input autofocus autocomplete="off" class="form-control mx-auto w-auto" id="new_email" name="newEmail" placeholder="Email (Optional)" type="text">
+            </div>
+            <div class="m-3">
+                <input autofocus autocomplete="off" class="form-control mx-auto w-auto" id="phone_number" name="phoneNumber" placeholder="Number: {{ phone_number }}" type="text" disabled>
+            </div>
+            <div class="m-3">
+                <input autofocus autocomplete="off" class="form-control mx-auto w-auto" id="new_number" name="newNumber" placeholder="Number (Optional)" type="text">
+            </div>
+            <button class="btn btn-primary mt-4" type="submit">Update Info</button>
+        </form>
+    </div>
+    <div class="overlay-profile hidden-modal"></div>
+{% endblock %}
