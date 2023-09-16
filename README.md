@@ -135,3 +135,5 @@ This is where you can dive into a bit more detail around your statistics and who
 In this link you will see your profile details. Here you can click the edit information button and fill out the form to update your information.
 
 **Note that updating the form requires you to update your username, otherwise it won't work**
+
+## Thank you for CS50 for teaching the fundamentals to develop this app 😊
