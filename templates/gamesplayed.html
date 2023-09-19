@@ -1,0 +1,65 @@
+{% extends "layout.html" %} 
+
+{% block title %} 
+    Games Played
+{% endblock %} 
+
+{% block main %}
+    <div class="container text-center games-played">
+        <h1 class="headers">Overall User Statistics</h1>
+        <div class="row">
+            <div class="col">
+                <p class="game-stat-headers mt-5">Games Played</p>
+                <span class="game-stats">{{ games_played }}</span>
+            </div>
+            <div class="col">
+                <p class="game-stat-headers mt-5">Games Won</p>
+                <span class="game-stats">{{ games_won }}</span>
+            </div>
+            <div class="col">
+                <p class="game-stat-headers mt-5">Games Lost</p>
+                <span class="game-stats">{{ games_lost }}</span>
+            </div>
+            <div class="col">
+                <p class="game-stat-headers mt-5">Game Win %</p>
+                <span class="game-stats">{{ game_win_percentage }}%</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p class="game-stat-headers mt-5">Points Conceded</p>
+                <span class="game-stats">{{ points_conceded }}</span>
+            </div>
+            <div class="col">
+                <p class="game-stat-headers mt-5">Points Won</p>
+                <span class="game-stats">{{ points_won }}</span>
+            </div>
+            <div class="col">
+                <p class="game-stat-headers mt-5">Players Versed</p>
+                <span class="game-stats">{{ players_versed }}</span>
+            </div>
+            <div class="col">
+                <p class="game-stat-headers mt-5">Player Versed Most</p>
+                <span class="game-stats">{{ player_versed_most }}</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p class="game-stat-headers mt-5">Matches Played</p>
+                <span class="game-stats">{{ matches_played }}</span>
+            </div>
+            <div class="col">
+                <p class="game-stat-headers mt-5">Matches Won</p>
+                <span class="game-stats">{{ matches_won }}</span>
+            </div>
+            <div class="col">
+                <p class="game-stat-headers mt-5">Matches Lost</p>
+                <span class="game-stats">{{ matches_lost }}</span>
+            </div>
+            <div class="col">
+                <p class="game-stat-headers mt-5">Match Win %</p>
+                <span class="game-stats">{{ match_win_percentage }}</span>
+            </div>
+        </div>
+    </div>
+{% endblock %}

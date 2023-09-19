@@ -11,6 +11,8 @@
                 <h1 class="text-lg-center m-3" id="user">{{ user }}</h1>
                 <button class="btn-large-score btn mb-5" id="score--0">0</button>
                 <h2 class="text-lg-center m-3" id="games--0">0 / {{ games }}</h2>
+                <button class="btn btn-light mb-3 btn-serve btn-player--0 btn-disabled" id="left--0">L</button>
+                <button class="btn btn-light mb-3 btn-serve btn-player--0 btn-active" id="right--0">R</button>
             </div>
             <div class="col-sm-2 game-btns">
                 <div class="row">
@@ -20,9 +22,9 @@
                     <button class="btn btn-danger mb-3" id="endMatchBtn">End Match</button>
                 </div>
                 <div class="row">
-                    <span class="text-body" id="gamesToPlay">Total Games: {{ games }}</span>
-                    <span class="text-body" id="points">Points per Game: {{ points }}</span>
-                    <span class="text-body" id="win_by">Win By: {{ win_by }}</span>
+                    <span class="text-body" id="gamesToPlay" hidden>Total Games: {{ games }}</span>
+                    <span class="text-body" id="points" hidden>Points per Game: {{ points }}</span>
+                    <span class="text-body" id="win_by" hidden>Win By: {{ win_by }}</span>
                     <span class="text-body" id="gamesPlayed">Games Played: 0</span>
                 </div>
             </div>
@@ -30,6 +32,8 @@
                 <h1 class="text-lg-center m-3" id="opponent">{{ opponent }}</h1>
                 <button class="btn-large-score btn mb-5" id="score--1">0</button>
                 <h2 class="text-lg-center m-3" id="games--1">0 / {{ games }}</h2>
+                <button class="btn btn-light mb-3 btn-serve btn-player--1 btn-disabled" id="left--1">L</button>
+                <button class="btn btn-light mb-3 btn-serve btn-player--1 btn-disabled" id="right--1">R</button>
             </div>
         </div>
     </div>
@@ -40,6 +44,15 @@
             <button type="button" class="btn btn-secondary m-3 game-modal" data-bs-dismiss="gameWonModal" id="goBack">Back</button>
             <button type="button" class="btn btn-warning m-3 game-modal" id="nextGame">Next Game</button>
         </div>
+    </div>
+    <div class="hidden-modal game-won-modal" id="matchWonModal" tabindex="-1">
+        <h1 class="modal-title fs-5" id="matchWonModalTitle"></h1>
+        <button type="submit" class="btn btn-danger m-3 game-modal" id="returnHome" onclick="location.href='/';">Return Home</button>
+    </div>
+    <div class="hidden-modal game-won-modal" id="endMatchModal" tabindex="-1">
+        <h1 class="modal-title fs-5" id="endMatchModalTitle">Are you sure you want to end this Match?</h1>
+        <button type="submit" class="btn btn-danger m-3 game-modal" id="returnHome" onclick="location.href='/';">Yes</button>
+        <button type="submit" class="btn btn-primary m-3 game-modal" id="noBtn">No</button>
     </div>
     <div class="overlay hidden-modal"></div>
 {% endblock %}

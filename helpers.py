@@ -24,9 +24,9 @@ def check_email(email):
         # Replace with normalised form
         email = v.normalized
         # return False for the if statement in app.py
-        return False
-    except EmailNotValidError:
         return True
+    except EmailNotValidError:
+        return False
 
 
 def apology(message, code=400):
