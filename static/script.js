@@ -3,6 +3,8 @@
 // Selecting required elements for implementing the game functionality
 const userEl = document.querySelector(".player--0");
 const opponentEl = document.querySelector(".player--1");
+const userBtn = document.getElementById("score--0");
+const oppBtn = document.getElementById("score--1");
 const undoBtn = document.getElementById("undoBtn");
 const gameWonModal = document.getElementById("gameWonModal");
 const matchWonModal = document.getElementById("matchWonModal");
@@ -14,6 +16,8 @@ const endMatchBtn = document.getElementById("endMatchBtn");
 const noBtn = document.getElementById("noBtn");
 const userGamesWon = document.getElementById("games--0");
 const oppGamesWon = document.getElementById("games--1");
+
+const serveButtons = document.querySelectorAll(".btn-serve");
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -82,7 +86,8 @@ gameInfo[`${winBy[0]}`] = parseInt(winBy[1]);
 gameInfo[`${gamesPlayed[0]}`] = parseInt(gamesPlayed[1]);
 
 // Defining Variables for event listeners
-let curPlayerScore, curPlayerScoreUsable, lastPlayerToScore;
+let curPlayerScore, curPlayerScoreUsable;
+let lastPlayerToScore = 0;
 
 // Player 0 is the first nested array and player-1 is the second
 let gameScores = [[], []];
@@ -203,7 +208,6 @@ const checkMatchWon = function (player, best_of) {
 };
 
 /////////////////////////////////////////////////////
-
 // LISTENERS
 // UNDO button functionality
 undoBtn.addEventListener("click", function () {
@@ -211,15 +215,19 @@ undoBtn.addEventListener("click", function () {
 });
 
 // Scoreboard event listener for defined user
-userEl.addEventListener("click", function () {
+userBtn.addEventListener("click", function () {
   incrementScoreForPlayer(0);
+  clearButtons(1);
   checkIfGameWon(0);
+  toggleServeSide();
 });
 
 // Scoreboard event listener for defined user
-opponentEl.addEventListener("click", function () {
+oppBtn.addEventListener("click", function () {
   incrementScoreForPlayer(1);
+  clearButtons(0);
   checkIfGameWon(1);
+  toggleServeSide();
 });
 
 // Next Game event listener
@@ -242,7 +250,7 @@ nextGameBtn.addEventListener("click", function () {
   gamesHTMLLocation = document.getElementById("gamesPlayed");
   gamesHTMLLocation.textContent = `Games Played: ${curGamesPlayed}`;
 
-  // Update the user who won the games' score
+  // Update the user who won the games score
   updateGamesWon(lastPlayerToScore, totalGames);
   // Reset the buttons and close the modal window
   resetScores();
@@ -284,3 +292,114 @@ const sendData = function () {
   request.open("POST", `/matchFinished/${dataToSend}`);
   request.send();
 };
+
+/////////////////////////////////////////////////////////////
+// Implement serve side functionality
+const toggleServeSide = function () {
+  // Get nodelist of both buttons for user
+  const servingBtns = document.querySelectorAll(
+    `.btn-player--${lastPlayerToScore}`
+  );
+  // 0 is left button, 1 is right btn in nodelist
+  const leftServe = servingBtns[0];
+  const rightServe = servingBtns[1];
+  const serveFromLeft = leftServe.classList.contains("btn-active");
+  const serveFromRight = rightServe.classList.contains("btn-active");
+
+  // check if the buttons contain btn-active
+  // If none have it, add it to the right button.
+  // If one has it, toggle it off and then on for the opposite button
+  if (serveFromLeft) {
+    rightServe.classList.toggle("btn-active");
+    leftServe.classList.toggle("btn-active");
+    rightServe.classList.toggle("btn-disabled");
+    leftServe.classList.toggle("btn-disabled");
+  } else if (serveFromRight) {
+    rightServe.classList.toggle("btn-active");
+    leftServe.classList.toggle("btn-active");
+    rightServe.classList.toggle("btn-disabled");
+    leftServe.classList.toggle("btn-disabled");
+  } else if (!serveFromLeft && !serveFromRight) {
+    rightServe.classList.toggle("btn-active");
+    rightServe.classList.toggle("btn-disabled");
+  }
+};
+
+const clearButtons = function (player) {
+  // Get nodelist of all serve buttons
+  const oppBtnsToClear = document.querySelectorAll(`.btn-player--${player}`);
+  oppBtnsToClear.forEach((btn) => {
+    btn.classList.add("btn-disabled");
+    btn.classList.remove("btn-active");
+  });
+};
+
+// Event listeners for each serve button
+const p0LeftServeBtn = document.getElementById("left--0");
+const p0RightServeBtn = document.getElementById("right--0");
+const p1LeftServeBtn = document.getElementById("left--1");
+const p1RightServeBtn = document.getElementById("right--1");
+
+p0LeftServeBtn.addEventListener("click", function () {
+  if (p0LeftServeBtn.classList.contains("btn-active")) {
+    return;
+  }
+  p0LeftServeBtn.classList.add("btn-active");
+  p0LeftServeBtn.classList.remove("btn-disabled");
+
+  // make all other buttons disabled
+  p0RightServeBtn.classList.remove("btn-active");
+  p0RightServeBtn.classList.add("btn-disabled");
+  p1RightServeBtn.classList.remove("btn-active");
+  p1RightServeBtn.classList.add("btn-disabled");
+  p1LeftServeBtn.classList.remove("btn-active");
+  p1LeftServeBtn.classList.add("btn-disabled");
+});
+
+p0RightServeBtn.addEventListener("click", function () {
+  if (p0RightServeBtn.classList.contains("btn-active")) {
+    return;
+  }
+  p0RightServeBtn.classList.add("btn-active");
+  p0RightServeBtn.classList.remove("btn-disabled");
+
+  // make all other buttons disabled
+  p0LeftServeBtn.classList.remove("btn-active");
+  p0LeftServeBtn.classList.add("btn-disabled");
+  p1RightServeBtn.classList.remove("btn-active");
+  p1RightServeBtn.classList.add("btn-disabled");
+  p1LeftServeBtn.classList.remove("btn-active");
+  p1LeftServeBtn.classList.add("btn-disabled");
+});
+
+p1LeftServeBtn.addEventListener("click", function () {
+  if (p1LeftServeBtn.classList.contains("btn-active")) {
+    return;
+  }
+  p1LeftServeBtn.classList.add("btn-active");
+  p1LeftServeBtn.classList.remove("btn-disabled");
+
+  // make all other buttons disabled
+  p0RightServeBtn.classList.remove("btn-active");
+  p0RightServeBtn.classList.add("btn-disabled");
+  p1RightServeBtn.classList.remove("btn-active");
+  p1RightServeBtn.classList.add("btn-disabled");
+  p0LeftServeBtn.classList.remove("btn-active");
+  p0LeftServeBtn.classList.add("btn-disabled");
+});
+
+p1RightServeBtn.addEventListener("click", function () {
+  if (p1RightServeBtn.classList.contains("btn-active")) {
+    return;
+  }
+  p1RightServeBtn.classList.add("btn-active");
+  p1RightServeBtn.classList.remove("btn-disabled");
+
+  // make all other buttons disabled
+  p0LeftServeBtn.classList.remove("btn-active");
+  p0LeftServeBtn.classList.add("btn-disabled");
+  p0RightServeBtn.classList.remove("btn-active");
+  p0RightServeBtn.classList.add("btn-disabled");
+  p1LeftServeBtn.classList.remove("btn-active");
+  p1LeftServeBtn.classList.add("btn-disabled");
+});
