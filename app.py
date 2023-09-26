@@ -1,12 +1,15 @@
 import os
 
-from cs50 import SQL
+# from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 import json
 
-from helpers import login_required, check_email, apology
+from helpers import *
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey
+from sqlalchemy.orm import aliased
 
 # Configure application
 app = Flask(__name__)
@@ -17,7 +20,72 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Use CS50 library for configuring the database
-db = SQL("sqlite:///squash.db")
+# db = SQL("sqlite:///squash.db")
+# Configure database connection
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://squash_user:9JoKYY0wLm2iJFm7QuZl1451usDw5PG1@dpg-ck57q5mru70s7393f1p0-a.singapore-postgres.render.com/squash"
+db = SQLAlchemy(app)
+
+# Creating tables for PostgreSQL database
+
+
+class UsersInfo(db.Model):
+    __tablename__ = 'usersInfo'
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    username = db.Column(db.Text, nullable=False)
+    hash = db.Column(db.Text, nullable=False)
+    number = db.Column(db.Text)
+    email = db.Column(db.Text)
+
+    # Create a unique index on the username column
+    __table_args__ = (
+        db.UniqueConstraint('username', name='unique_username'),
+    )
+
+
+class Games(db.Model):
+    __tablename__ = "games"
+    gameId = db.Column(db.Integer, primary_key=True, nullable=False)
+    matchId = db.Column(db.Integer, db.ForeignKey(
+        'matches.matchId'), nullable=False)
+    userId = db.Column(db.Integer, db.ForeignKey(
+        'usersInfo.id'), nullable=False)
+    userName = db.Column(db.Text, nullable=False)
+    opponentName = db.Column(db.Text, nullable=False)
+    userPoints = db.Column(db.Integer, nullable=False)
+    opponentPoints = db.Column(db.Integer, nullable=False)
+    gameWinner = db.Column(db.Text, nullable=False)
+    time = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+
+    # Define a relationship to the UsersInfo model with an explicit join condition
+    user = db.relationship(
+        'UsersInfo', foreign_keys=[userId])
+
+    # Define a relationship to the Matches model
+    match = db.relationship('Matches', foreign_keys=[
+                            matchId])
+
+    def as_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
+
+class Matches(db.Model):
+    __tablename__ = "matches"
+    matchId = db.Column(db.Integer,  primary_key=True, nullable=False)
+    userId = db.Column(db.Integer, db.ForeignKey(
+        'usersInfo.id'), nullable=False)
+    userName = db.Column(db.Text, nullable=False)
+    opponent = db.Column(db.Text, nullable=False)
+    userGamesWon = db.Column(db.Integer, nullable=False)
+    opponentGamesWon = db.Column(db.Integer, nullable=False)
+    matchWinner = db.Column(db.Text, nullable=False)
+    time = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+
+    # Define a relationship to the UsersInfo model with an explicit join condition
+    user = db.relationship(
+        'UsersInfo', foreign_keys=[userId])
+
+    def as_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
 
 # Ensure reponses are not cached
@@ -46,24 +114,23 @@ def index():
 
     try:
         # Get last 10 match info
-        match_results = db.execute(
-            "SELECT * FROM matches WHERE userId = ? ORDER BY time DESC LIMIT ?", user_id, matches)
+        match_results = Matches.query.filter_by(userId=user_id).order_by(
+            Matches.time.desc()).limit(matches).all()
 
         # Get last 50 games
-        game_results = db.execute(
-            "SELECT * FROM games WHERE userId = ? ORDER BY time DESC LIMIT ?", user_id, games)
+        game_results = Games.query.filter_by(userId=user_id).order_by(
+            Games.time.desc()).limit(games).all()
 
         # Implementing stats from matches
         for match in match_results:
             matches_played = matches_played + 1
-            total_games_won = total_games_won + match["userGamesWon"]
+            total_games_won = total_games_won + match.userGamesWon
 
         games_played = len(game_results)
         # Calculating values for variables above
         for game in game_results:
-            total_points_scored = total_points_scored + game["userPoints"]
-            total_points_conceded = total_points_conceded + \
-                game["opponentPoints"]
+            total_points_scored = total_points_scored + game.userPoints
+            total_points_conceded = total_points_conceded + game.opponentPoints
 
         average_points_scored = round(
             float(total_points_scored / games_played), 2)
@@ -83,7 +150,10 @@ def index():
     gameplay_stats["totalGamesWon"] = total_games_won
     gameplay_stats["matchesPlayed"] = matches_played
 
-    return render_template("index.html", match_results=match_results, gameplay_stats=gameplay_stats, games=games_played)
+    try:
+        return render_template("index.html", match_results=match_results, gameplay_stats=gameplay_stats, games=games_played)
+    except:
+        return render_template("login.html")
 
 
 @app.route("/logout")
@@ -114,19 +184,16 @@ def login():
             return apology("Must provide a password", 403)
 
         # Query database for unique username
-        users = db.execute(
-            "SELECT * FROM usersInfo WHERE username = ?", request.form.get(
-                "username")
-        )
+        username = request.form.get("username")
+        # Query the UsersInfo table using SQLAlchemy
+        user = UsersInfo.query.filter_by(username=username).first()
 
         # Ensure username exists and password is correct
-        if len(users) != 1 or not check_password_hash(
-            users[0]["hash"], request.form.get("password")
-        ):
+        if user is None or not check_password_hash(user.hash, request.form.get("password")):
             return apology("Invalid username and/or password", 403)
 
         # Remember which user has logged in
-        session["user_id"] = users[0]["id"]
+        session["user_id"] = user.id
 
         # Redirect user to home page
         return redirect("/")
@@ -159,14 +226,15 @@ def register():
         # Add user to database if the condition below is met
         if password == confirm and username != "":
             try:
-                # Attempt to add user. Note usernames are all unique. Number can be blank, not required.
-                db.execute(
-                    "INSERT INTO usersInfo (username, hash, email, number) VALUES(?, ?, ?, ?)",
-                    username,
-                    generate_password_hash(password),
-                    email,
-                    phone_number
-                )
+                # Create a new UsersInfo object
+                new_user = UsersInfo(username=username, hash=generate_password_hash(
+                    password), email=email, number=phone_number)
+
+                # Add the new user to the session
+                db.session.add(new_user)
+
+                # Commit the changes to the database
+                db.session.commit()
             except:
                 return apology("Username already taken. Please pick a new one.", 403)
 
@@ -184,8 +252,12 @@ def register():
 def newgame():
     try:
         # Get current user id and show in form
-        user = db.execute("SELECT username FROM usersInfo WHERE id=?",
-                          session["user_id"])[0]["username"]
+        user_id = session["user_id"]
+        user = UsersInfo.query.filter_by(id=user_id).first()
+        if user:
+            username = user.username
+        else:
+            username = None
     except:
         return apology("Unable to get username from DB", 403)
 
@@ -209,14 +281,15 @@ def newgame():
             return apology("Player must verse someone", 403)
 
         # Redirect user to new game page with relevant information
-        return render_template("play.html", user=user, opponent=opponent, games=games_to_play, points=points_per_game, win_by=win_by)
+        return render_template("play.html", user=username, opponent=opponent, games=games_to_play, points=points_per_game, win_by=win_by)
 
     # User got here via GET so render new game form
     else:
-        return render_template("newgame.html", user=user)
+        return render_template("newgame.html", user=username)
 
 
 @app.route('/matchFinished/<string:matchData>', methods=['POST'])
+@login_required
 def matchFinished(matchData):
     # 1 - Load data
     data = json.loads(matchData)
@@ -240,18 +313,29 @@ def matchFinished(matchData):
     data.pop('oppGamesWon')
 
     # 2 - Add overall result to the matches table in the database
-    db.execute("INSERT INTO matches (userId, userName, opponent, userGamesWon, opponentGamesWon, matchWinner) VALUES (?, ?, ?, ?, ?, ?)",
-               user_id, user, opponent, userGamesWon, oppGamesWon, winner)
+    match = Matches(
+        userId=user_id,
+        userName=user,
+        opponent=opponent,
+        userGamesWon=userGamesWon,
+        opponentGamesWon=oppGamesWon,
+        matchWinner=winner
+    )
+    db.session.add(match)
+    db.session.commit()
 
     # get the latest ID for matches from the match DB.
-    matchId = db.execute(
-        "SELECT * FROM matches ORDER BY matchId DESC LIMIT 1")[0]["matchId"]
+    latest_match = Matches.query.order_by(Matches.matchId.desc()).first()
+
+    if latest_match:
+        matchId = latest_match.matchId
+    else:
+        matchId = None
 
     # 3 - Add the individual game results to the games table in the database
-    for game in data:
-        # Grab game data and convert to single value for db execution
-        userPoints = data[game][0]
-        oppPoints = data[game][1]
+    for game_key, game_data in data.items():
+        userPoints = game_data[0]
+        oppPoints = game_data[1]
         userScore = max(userPoints)
         oppScore = max(oppPoints)
 
@@ -261,8 +345,18 @@ def matchFinished(matchData):
         else:
             gameWinner = opponent
 
-        db.execute("INSERT INTO games (matchId, userId, userName, opponentName, userPoints, opponentPoints, gameWinner) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                   matchId, user_id, user, opponent, userScore, oppScore, gameWinner)
+        game = Games(
+            matchId=matchId,
+            userId=user_id,
+            userName=user,
+            opponentName=opponent,
+            userPoints=userScore,
+            opponentPoints=oppScore,
+            gameWinner=gameWinner
+        )
+        # Add new game to session and commit to Database
+        db.session.add(game)
+        db.session.commit()
 
     return redirect("/")
 
@@ -276,13 +370,28 @@ def gamesPlayed():
     MATCHES = 50
     # Get data from Database for user
     try:
-        game_data = db.execute(
-            "SELECT * FROM games WHERE userId = ? ORDER BY time DESC LIMIT ?", user_id, GAMES)
-        match_data = db.execute(
-            "SELECT * FROM matches WHERE userId = ? LIMIT ?", user_id, MATCHES)
-    except:
-        game_data = {}
-        match_data = {}
+        game_alias = aliased(Games)
+        game_data = (
+            db.session.query(game_alias)
+            .filter_by(userId=user_id)
+            .order_by(game_alias.time.desc())
+            .limit(GAMES)
+            .all()
+        )
+    except Exception as e:
+        game_data = []
+
+    # Get match data for the user
+    try:
+        match_alias = aliased(Matches)
+        match_data = (
+            db.session.query(match_alias)
+            .filter_by(userId=user_id)
+            .limit(MATCHES)
+            .all()
+        )
+    except Exception as e:
+        match_data = []
 
     # Declaring variables for game stats
     games_played = 0
@@ -296,17 +405,18 @@ def gamesPlayed():
     # Manipulate the data to show the user Valuable statistics
     for game in game_data:
         # grabbing opponent name
-        opponent = game["opponentName"]
+        opponent = game.opponentName
+
         # adding scores
-        points_conceded = points_conceded + game["opponentPoints"]
-        points_won = points_won + game["userPoints"]
+        points_conceded += game.opponentPoints
+        points_won += game.userPoints
         games_played += 1
         # add opponent to the opponents list for use later
         if opponent not in opponents_versed_list:
             opponents_versed_list.append(opponent)
             players_versed += 1
 
-        if game["gameWinner"] == opponent:
+        if game.gameWinner == opponent:
             games_lost += 1
         else:
             games_won += 1
@@ -325,17 +435,17 @@ def gamesPlayed():
     # Loop over match data and update variables
     for match in match_data:
         # Get username for userId
-        username = match["userName"]
-        opponent = match["opponent"]
+        username = match.userName
+        opponent = match.opponent
         # If the matchwinner matches the username, update the score, otherwise, the match was lost
-        if match["matchWinner"] == username:
+        if match.matchWinner == username:
             matches_won += 1
         else:
             matches_lost += 1
 
         # add current opponent to dict and update value
         if opponent in players_versed_most.keys():
-            players_versed_most[opponent] = players_versed_most[opponent] + 1
+            players_versed_most[opponent] += 1
         else:
             players_versed_most[opponent] = 1
 
@@ -346,11 +456,13 @@ def gamesPlayed():
             float(matches_won / matches_played), 2) * 100
     except:
         match_win_percentage = 0
+
     # Find who we have versed the most
-    key_list = list(players_versed_most.keys())
-    val_list = list(players_versed_most.values())
-    position = val_list.index(max(players_versed_most.values()))
-    player_versed_most = key_list[position]
+    if players_versed_most:
+        player_versed_most = max(
+            players_versed_most, key=players_versed_most.get)
+    else:
+        player_versed_most = None
 
     return render_template("gamesplayed.html", games_played=games_played, games_won=games_won, games_lost=games_lost, game_win_percentage=game_win_percentage, points_conceded=points_conceded, points_won=points_won, players_versed=players_versed, player_versed_most=player_versed_most, matches_played=matches_played, matches_won=matches_won, matches_lost=matches_lost, match_win_percentage=match_win_percentage)
 
@@ -361,12 +473,11 @@ def profile():
     # Extract user information from database
     user_id = session["user_id"]
 
-    user_info = db.execute(
-        "SELECT * FROM usersInfo WHERE id = ?", user_id)[0]
+    user_info = UsersInfo.query.filter_by(id=user_id).first()
 
-    username = user_info["username"]
-    email = user_info["email"]
-    phone_number = user_info["number"]
+    username = user_info.username
+    email = user_info.email
+    phone_number = user_info.number
 
     if not email:
         email = "None Provided"
@@ -385,11 +496,10 @@ def updateUserInfo():
         user_id = session["user_id"]
         # Extract old info from database
         try:
-            userInfo = db.execute(
-                "SELECT * FROM usersInfo WHERE id = ?", user_id)[0]
-            old_username = userInfo["username"]
-            old_email = userInfo["email"]
-            old_number = userInfo["number"]
+            user_info = UsersInfo.query.filter_by(id=user_id).first()
+            old_username = user_info.username
+            old_email = user_info.email
+            old_number = user_info.number
         except:
             return apology("Unable to get user info form DB", 403)
 
@@ -410,40 +520,52 @@ def updateUserInfo():
         # Checking email input
         email_validation = check_email(new_email)
 
-        # Attempt to update userinfo
         try:
             # 1 - Update username in usersInfo
-            db.execute("UPDATE usersInfo SET username = ? WHERE id = ?",
-                       new_username, user_id)
+            user = UsersInfo.query.filter_by(id=user_id).first()
+            user.username = new_username
+            db.session.commit()
 
             # 2 - Update username in games
-            db.execute("UPDATE games SET userName = ? WHERE userId = ?",
-                       new_username, user_id)
+            Games.query.filter_by(userId=user_id).update(
+                {"userName": new_username})
+            db.session.commit()
 
             # 3 - Update username in matches
-            db.execute(
-                "UPDATE matches SET userName = ? WHERE userId = ?", new_username, user_id)
+            Matches.query.filter_by(userId=user_id).update(
+                {"userName": new_username})
+            db.session.commit()
 
-        except:
-            # Render error
+        except Exception as e:
+            # Handle the error and return an apology
+            db.session.rollback()
             return apology("Unable to update user username. Please try again", 400)
 
         # Update email
         if email_validation == True:
             try:
-                db.execute(
-                    "UPDATE usersInfo SET email = ? WHERE id = ?", new_email, user_id)
-            except:
-                return ("Please enter a valid email address.", 400)
+                # Update email in usersInfo
+                user = UsersInfo.query.filter_by(id=user_id).first()
+                user.email = new_email
+                db.session.commit()
+
+            except Exception as e:
+                # Handle the error and return an apology
+                db.session.rollback()
+                return apology("Unable to update user email. Please try again", 400)
 
         # Update user phone number
         try:
             # Evaluate if the number is not blank and not the same as the previous
             if new_number != "":
-                db.execute(
-                    "UPDATE usersInfo SET number = ? WHERE id = ?", new_number, user_id)
+                # Update email in usersInfo
+                user = UsersInfo.query.filter_by(id=user_id).first()
+                user.number = new_number
+                db.session.commit()
         except:
-            return apology("Unable to update number, server error.", 400)
+            # Handle the error and return an apology
+            db.session.rollback()
+            return apology("Unable to update user email. Please try again", 400)
 
         # Redirect back to home page if the update worked.
         flash("User information updated successfully.")
