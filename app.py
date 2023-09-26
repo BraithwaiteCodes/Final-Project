@@ -22,7 +22,8 @@ Session(app)
 # Use CS50 library for configuring the database
 # db = SQL("sqlite:///squash.db")
 # Configure database connection
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://squash_user:9JoKYY0wLm2iJFm7QuZl1451usDw5PG1@dpg-ck57q5mru70s7393f1p0-a.singapore-postgres.render.com/squash"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("SQUASH_DATABASE_URL")
+
 db = SQLAlchemy(app)
 
 # Creating tables for PostgreSQL database
