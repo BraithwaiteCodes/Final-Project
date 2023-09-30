@@ -1,8 +1,8 @@
 # Squash Tracker App
 
-#### Video Demo
+#### Video Demo: <https://youtu.be/Y9Q3i5_YzcY>
 
-#### Description
+#### Description:
 
 This is a squash app tracker that I made for tracking my recent games and stats for squash competitions.
 
